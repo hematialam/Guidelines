@@ -55,12 +55,12 @@ object PlainSRParse extends App {
     val pipeline = new StanfordCoreNLP(props)
     
     // Run some sentences through the pipeline
-    val trees_string = io.Source.fromFile("A1C Sentences", "utf-8")
+    val trees = io.Source.fromFile("A1C Sentences", "utf-8")
       .getLines()
       .flatMap { text =>
         parseToTrees(pipeline, text)
-      }
-      .map(_.toString)
+      }.toList
+    val trees_string= trees.map(_.toString)
       .reduce(_++"\n"++_)
     
     // This is more a Java idiom but Scala doesn't seem to have an equivalent 
