@@ -55,7 +55,7 @@ object PlainSRParse extends App {
     val pipeline = new StanfordCoreNLP(props)
     
     // Run some sentences through the pipeline
-    val trees = io.Source.fromFile("A1C Sentences", "utf-8")
+    val trees = io.Source.fromFile("A1C_Sentences", "utf-8")
       .getLines()
       .flatMap { text =>
         parseToTrees(pipeline, text)
