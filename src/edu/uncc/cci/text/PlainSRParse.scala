@@ -8,14 +8,18 @@ import java.nio.charset.StandardCharsets
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation
 import edu.stanford.nlp.pipeline.Annotation
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
+import edu.stanford.nlp.trees._
 import edu.stanford.nlp.trees.Tree
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation
+import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
+import com.chaoticity.dependensee.Main;
 
 object PlainSRParse extends App {
   
-  def parseToTrees(pipeline: StanfordCoreNLP, text: String) : List[Tree] = {
+  def parseToTrees(pipeline: StanfordCoreNLP, text: String) : List[(Tree, SemanticGraph)] = {
       
       // create an empty Annotation just with the given text
       val document = new Annotation(text)
@@ -28,7 +32,10 @@ object PlainSRParse extends App {
       val sentences = document.get(classOf[SentencesAnnotation]).asScala
       sentences.toList.map(sentence => {
         // this is the parse tree of the current sentence
-        sentence.get(classOf[TreeAnnotation]);
+        (
+          sentence.get(classOf[TreeAnnotation]),
+          sentence.get(classOf[CollapsedCCProcessedDependenciesAnnotation])
+        )
       })
   }
 
@@ -40,23 +47,35 @@ object PlainSRParse extends App {
     val pipeline = new StanfordCoreNLP(props)
     
     // Run some sentences through the pipeline
-    val trees = io.Source.fromFile("ADA_guidelines_sentences", "utf-8")
+    val trees = io.Source.fromFile("A1C_Sentences", "utf-8")
       .getLines()
       .toList.par // Read all the sentences and then process them all at once
       .flatMap ( parseToTrees(pipeline, _) )
       .toList
-    println(trees
-      .map(handle_tree)
+    val synopsis = trees.map { case (tree, graph) =>
+          tree.pennString() ++
+          graph.toString
+    }.reduce (_++"########\n"++_)
+    /*
+     * This does not work because it is too old. But it may help to know how to
+     * get the associated data
+    val tlp = new PennTreebankLanguagePack()
+    val gsf = tlp.grammaticalStructureFactory()
+    val gs = gsf.newGrammaticalStructure(tree)
+    val tdl = gs.typedDependenciesCCprocessed(true)
+    Main.writeImage(tree, tdl, "example.png", 3)
+    */
+    
+    /*println(trees
+      //.map(handle_tree)
       // CONDITIONs are not being generated. That's a problem.
       // TODO: Find out why
       //.filter(_.main_kind == PhraseType.CONDITION)
       .map(_.toString)
-      .reduce(_+"\n"+_))
-    val trees_string= trees.map(_.toString)
-      .reduce(_++"\n"++_)
+      .reduce(_++_))*/
     
     // This is more a Java idiom but Scala doesn't seem to have an equivalent 
-    //Files.write(Paths.get("ADA_Trees"), trees_string.getBytes(StandardCharsets.UTF_8))
+    Files.write(Paths.get("A1C_Trees"), synopsis.getBytes(StandardCharsets.UTF_8))
   }
   
   def handle_tree(subject : Tree) : Phrase = {
