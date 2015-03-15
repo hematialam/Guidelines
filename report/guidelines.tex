@@ -26,13 +26,38 @@ Our first attempt at extracting medical conditions and symptoms from unstructure
 \end{itemize}
 \end{enumerate}
 
+\begin{figure}
+\footnotesize
+\begin{verbatim}
+(ROOT
+  (NP
+    (NP (NNP Executive) (NNP Summary))
+    (: :)
+    (NP
+      (NP (NNPS Standards))
+      (PP (IN of)
+        (NP (NNP Medical) (NNP Care)))
+      (PP (IN in)
+        (NP (NNP Diabetesd2013) (NNP Current) (NNS criteria)))
+      (PP (IN for)
+        (NP
+          (NP (DT the) (NN diagnosis))
+          (PP (IN of)
+            (NP
+              (NP (NN diabetes) (CD •) (NN A1C))
+              (JJR >) (JJ =) (CD 6.5) (NN %))))))
+    (. .)))
+\end{verbatim}
+\caption{Constituent Parse of a Matched Sentence}
+\end{figure}
+
 There are several concerns about this approach, not the least of which are the limited scope of the links it can extract. It expects guidelines of the form
 "Values of $A1C \geq 6.5$ may indicate diabetes," but this causes serious brittleness. Consider the generally equivalent statement: "A1C values predict diabetes when greater than approximately 6.5."
 
 There are also weaknesses with tables, which are relatively common in medical literature, and any document of such links. Take for example the Wikipedia article on Diabetes. The condition information is stored in a structured way, as a table. The trouble is that it is not clear how to interpret the contents. "$\geq 6.5$" can be interpreted as a operator and value. But the rest of the content needs more context, and this is what we are aiming to solve in section three.
 \begin{figure}
 \includegraphics[width=\textwidth]{WikipediaA1CTable}
-\caption{Excerpt of the Wikipedia article on Diabetes}
+\caption{Excerpt of the Wikipedia article on Diabetes Mellitus}
 \end{figure}
 \section{Regular Expressions}
 \section{Dependency Graphs}
