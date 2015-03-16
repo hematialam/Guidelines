@@ -5,18 +5,24 @@
 \usepackage{lmodern}
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
 \raggedbottom
-\author{Sean Gallagher, Hossein Hemati, Wlodek Zadrozny}
+\author{Sean Gallagher, Hossein Hematialam, Wlodek Zadrozny}
 \title{Progress on Extraction of Medical Guidelines}
 \begin{document}
 \maketitle
 \begin{abstract}
 Our objective in the project has thus far been to show that we can extract medical information from text, particularly medical guidelines from text. In doing this, we have taken three approaches, building links from analysis of constituent trees, building links from regular expression matches on plain text, and via answer type detection in an existing question answering system.
 \end{abstract}
+
+\section{Preprocessing}
+The American Diabetes Association(ADA) publishes standards of medical cares in diabetes annually in its "Diabetes Care" journal. We consider ADA's guideline as our primary text source. It provides positive statements, tables, and figures about diabetes. We started by converting the guidelines from PDF to text format, editing sentences only to manage encoding errors, the majority of which were bullet points. Tables and some figures pose a problem, becoming unstructured text with many ambiguities. For example, Table 9 in our source text is replaced with a sentence of more than 80 words.
+
+In the next step, we tried to detect sentences of the text by LingPipe sentence detector which has reasonable accuracy and recall for our project. It detected 5,532 sentences from the text. 232 sentences contain "A1C" term which is an important factor in diagnosing diabetes.
+   
 \section{Constituent Trees}
-Our first attempt at extracting medical conditions and symptoms from unstructured text is by using heirarchical analysis of a constituent parse tree of the text. The system is relatively simple, following a general pattern:
+Our first attempt at extracting medical conditions and symptoms from unstructured text is by using hierarchical analysis of a constituent parse tree of the text. The system is relatively simple, following a general pattern:
 
 \begin{enumerate}
-\item Decend to the leaves of the tree, the original words.
+\item Descend to the leaves of the tree, the original words.
 \item Match classes of words for operators and numeric values.
 \item Match the remaining words against known tests and diseases.
 \item Ascend the tree, combining analyses as follows:
@@ -26,40 +32,50 @@ Our first attempt at extracting medical conditions and symptoms from unstructure
 \end{itemize}
 \end{enumerate}
 
-\begin{figure}
-\footnotesize
-\begin{verbatim}
-(ROOT
-  (NP
-    (NP (NNP Executive) (NNP Summary))
-    (: :)
-    (NP
-      (NP (NNPS Standards))
-      (PP (IN of)
-        (NP (NNP Medical) (NNP Care)))
-      (PP (IN in)
-        (NP (NNP Diabetesd2013) (NNP Current) (NNS criteria)))
-      (PP (IN for)
-        (NP
-          (NP (DT the) (NN diagnosis))
-          (PP (IN of)
-            (NP
-              (NP (NN diabetes) (CD •) (NN A1C))
-              (JJR >) (JJ =) (CD 6.5) (NN %))))))
-    (. .)))
-\end{verbatim}
-\caption{Constituent Parse of a Matched Sentence}
-\end{figure}
-
 There are several concerns about this approach, not the least of which are the limited scope of the links it can extract. It expects guidelines of the form
 "Values of $A1C \geq 6.5$ may indicate diabetes," but this causes serious brittleness. Consider the generally equivalent statement: "A1C values predict diabetes when greater than approximately 6.5."
 
-There are also weaknesses with tables, which are relatively common in medical literature, and any document of such links. Take for example the Wikipedia article on Diabetes. The condition information is stored in a structured way, as a table. The trouble is that it is not clear how to interpret the contents. "$\geq 6.5$" can be interpreted as a operator and value. But the rest of the content needs more context, and this is what we are aiming to solve in section three.
+There are also weaknesses with tables, which are relatively common in medical literature, and any document with more then a few such links. Take for example the Wikipedia article on diabetes. The condition information is stored in a structured way, as a table. The trouble is that it is not clear how to interpret the contents. "$\geq 6.5$" can be interpreted as a operator and value. But the rest of the content needs more context, and this is what we are aiming to solve in section four.
 \begin{figure}
 \includegraphics[width=\textwidth]{WikipediaA1CTable}
-\caption{Excerpt of the Wikipedia article on Diabetes Mellitus}
+\caption{Excerpt of the Wikipedia Article on Diabetes}
 \end{figure}
 \section{Regular Expressions}
+Modeling data is an essential part of information extraction from an unstructured data source like textual guidelines. Condition-action sentences provide information about the process flow in Clinical Guidelines. In this stage, we focus on modeling these sentences and extracting them automatically.
+
+Condition-action sentences are not always in form of ``\texttt{if} condition \texttt{then} action''. For example, in the sentence ``Conditions that affect erythrocyte turnover and hemoglobin variants must be considered, particularly when the A1C result does not correlate with the patient's clinical situation'', we have a condition-action sentence without an ``if'' term. On the other hand, conditions may refer to effects, intentions, or events rather than activities. For instance, we see an effect of a condition in ``if the A1C is 7.0\% and a repeat result is 6.8\%, the diagnosis of diabetes is confirmed.'' We see that these sentences provide valuable information for us. So, for this stage of project, we consider them as true condition-action sentences. 
+
+In order to identify condition-action sentences we used a simple pattern recognition by regular expressions. We consider four patterns for condition-sentences: 
+\begin{itemize}
+	\item `If condition, action.'
+	\item `Action if condition'
+	\item `When condition, action'
+	\item `Action when condition'
+\end{itemize}
+We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the guidelines. You can see some result sentences below:
+
+\begin{itemize}
+\item Sentence: ``If adults with diabetes choose to use alcohol, they should limit intake to a moderate amount (one drink per day or less for adult women and two drinks per  day or less for  adult men) and should take extra precautions to prevent hypoglycemia. (E)''
+
+Condition: ``adults with diabetes choose to use alcohol''
+
+Action: ``they should limit intake to a moderate amount (one drink per day or less for adult women and two drinks per day or less for adult men) and should take extra precautions to prevent hypoglycemia.''
+
+\item Sentence: ``When people with type 1 diabetes are deprived of insulin for 12– 48 h and are ketotic, exercise can worsen hyperglycemia and ketosis (197); therefore, vigorous activity should be avoided in the presence of ketosis.''
+
+Condition when 1: ``people with type 1 diabetes are deprived of insulin for 12 -- 48 h and are ketotic''
+
+Action: ``exercise can worsen hyperglycemia and ketosis -LRB- 197 -RRB- ; therefore , vigorous activity should be avoided in the presence of ketosis.''
+
+\item Sentence: ``Metformin, if not contraindicated and if tolerated, is the preferred initial pharmacological agent for type 2 diabetes. (A)''
+Condition: ``tolerated''
+Action: ``is the preferred initial pharmacological agent for type 2 diabetes.''
+\end{itemize}
+
+Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guideline condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
+
+To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
+
 \section{Dependency Graphs}
 % Integrated into Watsonsim
 We aim to improve our recognition of diagnostic criteria using other knowledge also available on Wikipedia. We can do that with many of the tools we have already been developing for question answering with Watsonsim.
@@ -100,29 +116,12 @@ increased thirst & weight loss & itchy skin & slow healing of cuts & headache  \
 \end{tabular}
 \medskip
 
-\begin{itemize}
-\item The query, which is formed to imitate Jeopardy (although this soon will not be necessary), is the following: ``This symptom indicates 
+The query, which is formed to imitate Jeopardy (although this soon will not be necessary), is the following: ``This symptom indicates 
 diabetes:'' The suggestion apparatus adds muscle pain and thirst as symptoms, but only thirst makes the list of top ten candidate answers.
-\item For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
-\item The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests the answer "blood glucose fasting test" but later scoring does not rank the candidate very highly.
-\end{itemize}
 
+For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
 
-As you can see, the current recall of the LAT method is not yet more than about 10\%. The precision of answers which are actually symptoms is high but the still fewer than one in ten candidates are symptoms. This reason becomes rather clear in resulting candidate answer list of the last query. Answers of the type requested are buried among answers which only mention the type.
-
-\begin{verbatim}
- 0: [0.862925 bllllllllll] Diabetes Tests and diagnosis
- 1: [0.837302 bbllllllllll] Glucose Tests
- 2: [0.755305 bllllllllll] Testing
- 3: [0.686052 bllllllllll] Blood Tests that Indicate Diabetes
- 4: [0.644805 bllllllllll] The A1C Test and Diabetes
- 5: [0.644578 bllllllllll] Type 2 diabetes Tests and diagnosis
- 6: [0.572282 bllllllllll] Diagnosis of Diabetes and Prediabetes
- 7: [0.572118 bllllllllll] Tests to Diagnose Diabetes
- 8: [0.559373 bllllllllll] Type 2 Diabetes
- 9: [0.554920 bllllllllll] 5 Important Tests for Type 2 Diabetes
-\end{verbatim}
-
-This could be seen as a failure of scoring, but to be fair to the model, the LAT feature has rather low recall and hence few instances to extract a coherent meaning from. This is something that needs to be addressed, and is currently the subject of development. Much low hanging fruit remains, including existing knowledge bases, more complete rules for extracting type-implying syntax, and better rules for matching hypo- and hypernyms among types. 
+The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests the answer "blood glucose fasting test" but later scoring does not rank the candidate very highly.
+So as a result, the current recall of the LAT method is not yet more than about 10\%. The precision of answers which are actually symptoms is high but the still fewer than one in ten candidates are symptoms.
 
 \end{document}
