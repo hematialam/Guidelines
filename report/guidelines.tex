@@ -100,12 +100,29 @@ increased thirst & weight loss & itchy skin & slow healing of cuts & headache  \
 \end{tabular}
 \medskip
 
-The query, which is formed to imitate Jeopardy (although this soon will not be necessary), is the following: ``This symptom indicates 
+\begin{itemize}
+\item The query, which is formed to imitate Jeopardy (although this soon will not be necessary), is the following: ``This symptom indicates 
 diabetes:'' The suggestion apparatus adds muscle pain and thirst as symptoms, but only thirst makes the list of top ten candidate answers.
+\item For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
+\item The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests the answer "blood glucose fasting test" but later scoring does not rank the candidate very highly.
+\end{itemize}
 
-For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
 
-The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests the answer "blood glucose fasting test" but later scoring does not rank the candidate very highly.
-So as a result, the current recall of the LAT method is not yet more than about 10\%. The precision of answers which are actually symptoms is high but the still fewer than one in ten candidates are symptoms.
+As you can see, the current recall of the LAT method is not yet more than about 10\%. The precision of answers which are actually symptoms is high but the still fewer than one in ten candidates are symptoms. This reason becomes rather clear in resulting candidate answer list of the last query. Answers of the type requested are buried among answers which only mention the type.
+
+\begin{verbatim}
+ 0: [0.862925 bllllllllll] Diabetes Tests and diagnosis
+ 1: [0.837302 bbllllllllll] Glucose Tests
+ 2: [0.755305 bllllllllll] Testing
+ 3: [0.686052 bllllllllll] Blood Tests that Indicate Diabetes
+ 4: [0.644805 bllllllllll] The A1C Test and Diabetes
+ 5: [0.644578 bllllllllll] Type 2 diabetes Tests and diagnosis
+ 6: [0.572282 bllllllllll] Diagnosis of Diabetes and Prediabetes
+ 7: [0.572118 bllllllllll] Tests to Diagnose Diabetes
+ 8: [0.559373 bllllllllll] Type 2 Diabetes
+ 9: [0.554920 bllllllllll] 5 Important Tests for Type 2 Diabetes
+\end{verbatim}
+
+This could be seen as a failure of scoring, but to be fair to the model, the LAT feature has rather low recall and hence few instances to extract a coherent meaning from. This is something that needs to be addressed, and is currently the subject of development. Much low hanging fruit remains, including existing knowledge bases, more complete rules for extracting type-implying syntax, and better rules for matching hypo- and hypernyms among types. 
 
 \end{document}
