@@ -124,11 +124,12 @@ increased thirst & weight loss & itchy skin & slow healing of cuts & headache  \
 \medskip
 
 The query, which is formed to imitate Jeopardy (although this soon will not be necessary), is the following: ``This symptom indicates 
-diabetes.'' The suggestion apparatus adds muscle pain and thirst as symptoms, but only thirst makes the list of top ten candidate answers.
+diabetes.'' The suggestion apparatus finds six symptoms, two of which are symptoms of diabetes: muscle pain and thirst.
 
 For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
 
-The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests the answer "blood glucose fasting test" but later scoring does not rank the candidate very highly.
-So as a result, the current recall of the lexical type method is not yet more than about 10\%. The precision of recognized symptoms is very high because of the strict text matches, but still only 22\% of the symptoms mentioned in the target text are recognized as such.
+The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests "blood glucose fasting test," and while the test would be recognized if used as a module in guideline extraction, the later scoring as part of question answering does not rank either suggestion very highly.
+
+The current recall of the lexical type apparatus is about 22\% for a small sample. On the other hand, the precision of recognized symptoms is very high because of the strict match rules. We believe we can improve the recall by adding a rules to match conjunctions, but to do this we are embedding a more complete logic engine.
 
 \end{document}
