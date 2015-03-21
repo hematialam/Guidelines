@@ -78,6 +78,11 @@ Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We ver
 
 To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
 
+\begin{figure}
+\includegraphics[width=\textwidth]{accuracies}
+\caption{Accuracies of Extraction Modules}
+\end{figure}
+
 \section{Dependency Graphs}
 % Integrated into Watsonsim
 We aim to improve our recognition of diagnostic criteria using other knowledge also available on Wikipedia. We can do that with many of the tools we have already been developing for question answering with Watsonsim.
@@ -119,11 +124,11 @@ increased thirst & weight loss & itchy skin & slow healing of cuts & headache  \
 \medskip
 
 The query, which is formed to imitate Jeopardy (although this soon will not be necessary), is the following: ``This symptom indicates 
-diabetes:'' The suggestion apparatus adds muscle pain and thirst as symptoms, but only thirst makes the list of top ten candidate answers.
+diabetes.'' The suggestion apparatus adds muscle pain and thirst as symptoms, but only thirst makes the list of top ten candidate answers.
 
 For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
 
 The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests the answer "blood glucose fasting test" but later scoring does not rank the candidate very highly.
-So as a result, the current recall of the lexical type method is not yet more than about 10\%. The precision of answers which are actually symptoms is high but the still fewer than one in ten candidates are symptoms.
+So as a result, the current recall of the lexical type method is not yet more than about 10\%. The precision of recognized symptoms is very high because of the strict text matches, but still only 22\% of the symptoms mentioned in the target text are recognized as such.
 
 \end{document}
