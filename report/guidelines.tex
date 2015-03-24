@@ -80,7 +80,7 @@ To achieve classification performance with regular expressions, we need to make 
 
 \begin{figure}
 \includegraphics[width=\textwidth]{accuracies}
-\caption{Accuracies of Extraction Modules}
+\caption{Accuracies of Extraction Modules (small samples)}
 \end{figure}
 
 \section{Dependency Graphs}
@@ -130,6 +130,10 @@ For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' 
 
 The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests "blood glucose fasting test," and while the test would be recognized if used as a module in guideline extraction, the later scoring as part of question answering does not rank either suggestion very highly.
 
-The current recall of the lexical type apparatus is about 22\% for a small sample. On the other hand, the precision of recognized symptoms is very high because of the strict match rules. We believe we can improve the recall by adding a rules to match conjunctions, but to do this we are embedding a more complete logic engine.
+The current recall of the lexical type apparatus on symptoms is about 22\% for diabetes, zero for hypertension (which is fine since it does not have any to speak of), but also zero for sepsis. Sepsis has plenty of symptoms, unfortunately, they are couched in a syntax indicating that sepsis may not be the only cause.
+
+On the other hand, the precision of recognized symptoms is very high because of the strict match rules. We integrated a more complete logic engine, and developed rules to match conjunctions, but we are uncertain how to recognize all such verbs as "includes," "indicates," "is associated with," and such syntax to improve recall without making the rules excessively verbose. 
+
+The situation with medical tests tend to be much clearer. The $HbA_{1c}$, as well as glucose tests, the Ham test and Fehling's solution are all detected for the query ``This test indicates diabetes," along with numerous tests not mentioned on the Wikipedia diabetes article, such as a postprandial glucose test. For hypertension, it has strong support for ``blood pressure" but also includes ``pulmonary function test" and ``renal glycosuria."
 
 \end{document}
