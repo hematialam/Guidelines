@@ -10,12 +10,13 @@ import edu.stanford.nlp.pipeline.Annotation
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import edu.stanford.nlp.trees._
 import edu.stanford.nlp.trees.Tree
+import edu.stanford.nlp.trees.TypedDependency
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
-import com.chaoticity.dependensee.Main;
+//import com.chaoticity.dependensee.Main;
 
 object PlainSRParse extends App {
   
@@ -47,7 +48,7 @@ object PlainSRParse extends App {
     val pipeline = new StanfordCoreNLP(props)
     
     // Run some sentences through the pipeline
-    val trees = io.Source.fromFile("A1C_Sentences", "utf-8")
+    val trees = io.Source.fromFile("ABRS", "utf-8")
       .getLines()
       .toList.par // Read all the sentences and then process them all at once
       .flatMap ( parseToTrees(pipeline, _) )
@@ -75,7 +76,7 @@ object PlainSRParse extends App {
       .reduce(_++_))*/
     
     // This is more a Java idiom but Scala doesn't seem to have an equivalent 
-    Files.write(Paths.get("A1C_Trees"), synopsis.getBytes(StandardCharsets.UTF_8))
+    Files.write(Paths.get("ABRS_Trees"), synopsis.getBytes(StandardCharsets.UTF_8))
   }
   
   def handle_tree(subject : Tree) : Phrase = {
@@ -128,4 +129,3 @@ object PlainSRParse extends App {
     new Phrase(left.content ++ " " ++ right.content, kinds)
   }
 }
-
