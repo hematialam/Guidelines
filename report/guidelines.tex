@@ -8,13 +8,14 @@
 \author{Sean Gallagher, Hossein Hematialam, Wlodek Zadrozny}
 \title{Progress on Extraction of Medical Guidelines}
 \begin{document}
+
 \maketitle
 \begin{abstract}
 Our objective in the project has thus far been to show that we can extract medical information from text, particularly medical guidelines. In doing this, we have taken three approaches, building links from analysis of constituent trees, building links from regular expression matches on plain text, and via answer type detection in an existing question answering system. So far, these approaches have shown recall on the order of 22\% and precision between 57\% and 100\%. We intend to continue following multiple strategies, and to direct further development with more specific tests and testing data.
 \end{abstract}
 
 \section{Preprocessing}
-The American Diabetes Association(ADA) publishes standards of medical cares in diabetes annually in its "Diabetes Care" journal. We consider ADA's guideline as our primary text source. It provides positive statements, tables, and figures about diabetes. We started by converting the guidelines from PDF to text format, editing sentences only to manage encoding errors, the majority of which were bullet points. Tables and some figures pose a problem, becoming unstructured text with many ambiguities. For example, Table 9 in our source text is replaced with a sentence of more than 80 words.
+The American Diabetes Association(ADA) publishes standards of medical cares in diabetes annually in its "Diabetes Care" journal. We consider ADA's guideline\cite{american2013diagnosis} as our primary text source. It provides positive statements, tables, and figures about diabetes. We started by converting the guidelines from PDF to text format, editing sentences only to manage encoding errors, the majority of which were bullet points. Tables and some figures pose a problem, becoming unstructured text with many ambiguities. For example, Table 9 in our source text is replaced with a sentence of more than 80 words.
 
 In the next step, we tried to detect sentences of the text by LingPipe sentence detector which has reasonable accuracy and recall for our project. It detected 5,532 sentences from the text. 232 sentences contain "A1C" term which is an important factor in diagnosing diabetes.
    
@@ -45,14 +46,14 @@ Modeling data is an essential part of information extraction from an unstructure
 
 Condition-action sentences are not always in form of ``\texttt{if} condition \texttt{then} action''. For example, in the sentence ``Conditions that affect erythrocyte turnover and hemoglobin variants must be considered, particularly when the A1C result does not correlate with the patient's clinical situation'', we have a condition-action sentence without an ``if'' term. On the other hand, conditions may refer to effects, intentions, or events rather than activities. For instance, we see an effect of a condition in ``if the A1C is 7.0\% and a repeat result is 6.8\%, the diagnosis of diabetes is confirmed.'' We see that these sentences provide valuable information for us. So, for this stage of project, we consider them as true condition-action sentences. 
 
-In order to identify condition-action sentences we used a simple pattern recognition by regular expressions. We consider four patterns for condition-sentences: 
+In order to identify condition-action sentences we used a simple pattern recognition, by inspiration of Wenzina and Kaiser's approach\cite{wenzina2013identifying},  by regular expressions. We consider four patterns for condition-sentences: 
 \begin{itemize}
 	\item `If condition, action.'
 	\item `Action if condition'
 	\item `When condition, action'
 	\item `Action when condition'
 \end{itemize}
-We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the guidelines. You can see some result sentences below:
+We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the diabetes guideline. You can see some result sentences below:
 
 \begin{itemize}
 \item Sentence: ``If adults with diabetes choose to use alcohol, they should limit intake to a moderate amount (one drink per day or less for adult women and two drinks per  day or less for  adult men) and should take extra precautions to prevent hypoglycemia. (E)''
@@ -75,6 +76,9 @@ Action: ``is the preferred initial pharmacological agent for type 2 diabetes.''
 \end{itemize}
 
 Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guideline condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
+
+We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension \cite{doi:10.1001/jama.2013.284427} and Rhinosinusitis\cite{chow2012idsa} guidelines. In Rhinosinusitis guideline, we see sentences like '' If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guideline come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''
+
 
 To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
 
@@ -138,7 +142,7 @@ The situation with medical tests tend to be much clearer. The $HbA_{1c}$, as wel
 
 \section{Software}
 
-We used a number of software packages to develop the existing software. In particular, we used CoreNLP for constructing constituent and dependency parses, and LingPipe for additional constituent parses, which was the initial stage of our development.
+We used a number of software packages to develop the existing software. In particular, we used CoreNLP \cite{manning-EtAl:2014:P14-5} for constructing constituent and dependency parses, and LingPipe for additional constituent parses, which was the initial stage of our development.
 We used Apache Jena and Fuzeki with TDB for interfacing with the DBPedia RDF database as part of the lexical types setup, but DBPedia ontologies provided few sufficiently specific types. We later used logic-programming style rules supported by Jena's Reasoner interface to detect types in passages, but after some limitations made processing prohibitively slow, we rewrote our lexical recognition rules for TuProlog. 
 
 The project source code was written in a mixture of Scala and Java, according to what was more appropriate at the time. Since several of our components run independently, the language difference rarely played a role in development.
@@ -151,4 +155,6 @@ There are a number of avenues of improvement for our software. In particular, we
 
 Our project consists of several generally independent modules, and represents a foray into possibilities of text mining for this particular domain. There remains some need for a more consistent and rigorous measure of its effectiveness, in part to direct development. It could also be incorporated into a single, possibly more stable system with more readily reproducible results. Even so, it has been shown to produce precise information from plain text using only machine reading and some automated filters.
 
+\bibliographystyle{plain}
+\bibliography{guidelines.bib}
 \end{document}
