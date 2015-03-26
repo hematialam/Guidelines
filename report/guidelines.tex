@@ -10,7 +10,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Our objective in the project has thus far been to show that we can extract medical information from text, particularly medical guidelines from text. In doing this, we have taken three approaches, building links from analysis of constituent trees, building links from regular expression matches on plain text, and via answer type detection in an existing question answering system.
+Our objective in the project has thus far been to show that we can extract medical information from text, particularly medical guidelines. In doing this, we have taken three approaches, building links from analysis of constituent trees, building links from regular expression matches on plain text, and via answer type detection in an existing question answering system. So far, these approaches have shown recall on the order of 22\% and precision between 57\% and 100\%. We intend to continue following multiple strategies, and to direct further development with more specific tests and testing data.
 \end{abstract}
 
 \section{Preprocessing}
@@ -52,7 +52,7 @@ In order to identify condition-action sentences we used a simple pattern recogni
 	\item `When condition, action'
 	\item `Action when condition'
 \end{itemize}
-We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the diabetes guidelines. You can see some result sentences below:
+We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the guidelines. You can see some result sentences below:
 
 \begin{itemize}
 \item Sentence: ``If adults with diabetes choose to use alcohol, they should limit intake to a moderate amount (one drink per day or less for adult women and two drinks per  day or less for  adult men) and should take extra precautions to prevent hypoglycemia. (E)''
@@ -75,8 +75,6 @@ Action: ``is the preferred initial pharmacological agent for type 2 diabetes.''
 \end{itemize}
 
 Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guideline condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
-
-We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension and Rhinosinusitis guidelines. In Rhinosinusitis guideline, we see sentences like '' If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guideline come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''.
 
 To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
 
@@ -137,5 +135,20 @@ The current recall of the lexical type apparatus on symptoms is about 22\% for d
 On the other hand, the precision of recognized symptoms is very high because of the strict match rules. We integrated a more complete logic engine, and developed rules to match conjunctions, but we are uncertain how to recognize all such verbs as "includes," "indicates," "is associated with," and such syntax to improve recall without making the rules excessively verbose. 
 
 The situation with medical tests tend to be much clearer. The $HbA_{1c}$, as well as glucose tests, the Ham test and Fehling's solution are all detected for the query ``This test indicates diabetes," along with numerous tests not mentioned on the Wikipedia diabetes article, such as a postprandial glucose test. For hypertension, it has strong support for ``blood pressure" but also includes ``pulmonary function test" and ``renal glycosuria."
+
+\section{Software}
+
+We used a number of software packages to develop the existing software. In particular, we used CoreNLP for constructing constituent and dependency parses, and LingPipe for additional constituent parses, which was the initial stage of our development.
+We used Apache Jena and Fuzeki with TDB for interfacing with the DBPedia RDF database as part of the lexical types setup, but DBPedia ontologies provided few sufficiently specific types. We later used logic-programming style rules supported by Jena's Reasoner interface to detect types in passages, but after some limitations made processing prohibitively slow, we rewrote our lexical recognition rules for TuProlog. 
+
+The project source code was written in a mixture of Scala and Java, according to what was more appropriate at the time. Since several of our components run independently, the language difference rarely played a role in development.
+
+\section{Possible Next Steps}
+
+There are a number of avenues of improvement for our software. In particular, we believe we can improve the recall of the lexical type system if we use the relations in a transitive way. For example, as it now stands, finding $HbA_{1c}$ in a list of guidelines is not sufficient to suggest it as a test. It also needs outside information, possibly found in the same search. But we believe it is tractable to detect such types from across many sources in a preprocessing step.
+
+\section{Conclusion}
+
+Our project consists of several generally independent modules, and represents a foray into possibilities of text mining for this particular domain. There remains some need for a more consistent and rigorous measure of its effectiveness, in part to direct development. It could also be incorporated into a single, possibly more stable system with more readily reproducible results. Even so, it has been shown to produce precise information from plain text using only machine reading and some automated filters.
 
 \end{document}
