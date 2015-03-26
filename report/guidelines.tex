@@ -52,7 +52,7 @@ In order to identify condition-action sentences we used a simple pattern recogni
 	\item `When condition, action'
 	\item `Action when condition'
 \end{itemize}
-We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the guidelines. You can see some result sentences below:
+We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the diabetes guidelines. You can see some result sentences below:
 
 \begin{itemize}
 \item Sentence: ``If adults with diabetes choose to use alcohol, they should limit intake to a moderate amount (one drink per day or less for adult women and two drinks per  day or less for  adult men) and should take extra precautions to prevent hypoglycemia. (E)''
@@ -75,6 +75,8 @@ Action: ``is the preferred initial pharmacological agent for type 2 diabetes.''
 \end{itemize}
 
 Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guideline condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
+
+We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension and Rhinosinusitis guidelines. In Rhinosinusitis guideline, we see sentences like '' If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guideline come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''.
 
 To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
 
