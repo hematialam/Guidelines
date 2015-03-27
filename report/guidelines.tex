@@ -11,7 +11,9 @@
 
 \maketitle
 \begin{abstract}
-Our objective in the project has thus far been to show that we can extract medical information from text, particularly medical guidelines. In doing this, we have taken three approaches, building links from analysis of constituent trees, building links from regular expression matches on plain text, and via answer type detection in an existing question answering system. So far, these approaches have shown recall on the order of 22\% and precision between 57\% and 100\%. We intend to continue following multiple strategies, and to direct further development with more specific tests and testing data.
+Medical guidelines are among the denser reading materials, and contain many conditional statements and criteria which medical professionals are expected to follow as part of their work. However, considering how expansive the text is, and how dense the prose can be, it is a good target for text mining since the convergence of many such conditionals are likely to be handled more efficiently by machines than humans.
+
+Such text tends to be relatively regular, making it amenable to several approaches, including: 1) building links from analysis of constituent trees, 2) building links from regular expression matches on plain text, and 3) detecting disease-related information based on type detection. In our samples, recursive analyses of constituent parses have proven to be excessively brittle and difficult scale for many types of condition-action pairs; often nearly every sample requires another rule of analysis. A regular expression based approach has proven to be a simple, efficient solution with an average of 68.25\% precision, but of uncertain recall due to the large source text size. The type-directed approach is not complete enough to create condition-action pairs, but determines the lexical types of symptoms and tests with generally perfect precision for a small sample, and a recall of 22\% and 100\% respectively. Symptoms are problematic for recall in particular due to an array of type synonyms not yet accounted for, a solution to which is among our future directions.
 \end{abstract}
 
 \section{Preprocessing}
@@ -107,11 +109,11 @@ This is not immediately helpful because it is not yet clear that glycated hemogl
 
 % Could also build an ontology from reading
 \subsection{Link Expansion}
-When evaluating supporting passages to discover lexical types, we have found it useful to annotate more than just the answer the passage supports. Finding a new object with the correct lexical type but in a supporting passage for another candidate answer now triggers the generation of new candidate answers.
+When evaluating supporting passages to discover lexical types, we have found it useful to open the search from purely verifying the type of a specific name to instead finding all of the names having a specific type. As a result, finding a the wrong object with the correct lexical type but in any supporting passage triggers the suggestion of new name. This approach tends to be helpful in situations where multiple names are defined at once, such as "Polyuria and polyphagia are symptoms of diabetes."
 
-The intuition for such an inclusion is clear. The symptom of pain is relevant enough to diabetes for authors to choose to include it, but diabetes is not relevant enough to pain for the inverse to occur. As a result, any list of symptoms or conditions relating to diabetes will be incomplete unless the evidence for an answer comes in large part from outside of its article.
+There is also an aspect of asymmetry in the relevance of passages. The symptom of pain is relevant enough to diabetes for authors to choose to include it, but diabetes is not relevant enough to pain for the inverse to occur. Thus, you will not find evidence linking the two in a document describing pain, so the title will generally be inaccurate for a search of symptoms, and the effect of the suggestion apparatus will be exaggerated.
 
-The new implications of the type search has the curious effect that the text analysis pipeline operates as a tree when a detected type suggests a new candidate. We can further stimulate this effect by then running type detection on the newly generated candidate answers, making a pipeline a graph, but the results tend to be very similar.
+The new implications of the type search has the curious effect that the text analysis pipeline operates as a tree when a detected type suggests a new name. We further stimulate this effect by then searching for type definitions among the evidence collected for the new suggested names. This adds a cycle and makes the pipeline a graph. We added a simple condition ending the cycle at three loops but typically this is not triggered, as it rather quickly finds all of the available definitions related to the original topic.
 % Pull pipeline
 % Mention redirects
 % Real links rather than redirects
@@ -132,7 +134,7 @@ diabetes.'' The suggestion apparatus finds six symptoms, two of which are sympto
 
 For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
 
-The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests "blood glucose fasting test," and while the test would be recognized if used as a module in guideline extraction, the later scoring as part of question answering does not rank either suggestion very highly.
+The query "This test indicates diabetes" discovers A1C is a test, and also suggests "blood glucose fasting test," both of which are correct.
 
 The current recall of the lexical type apparatus on symptoms is about 22\% for diabetes, zero for hypertension (which is fine since it does not have any to speak of), but also zero for sepsis. Sepsis has plenty of symptoms, unfortunately, they are couched in a syntax indicating that sepsis may not be the only cause.
 
