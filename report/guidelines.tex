@@ -103,11 +103,11 @@ This is not immediately helpful because it is not yet clear that glycated hemogl
 
 % Could also build an ontology from reading
 \subsection{Link Expansion}
-When evaluating supporting passages to discover lexical types, we have found it useful to annotate more than just the answer the passage supports. Finding a new object with the correct lexical type but in a supporting passage for another candidate answer now triggers the generation of new candidate answers.
+When evaluating supporting passages to discover lexical types, we have found it useful to detect all possible names with the target lexical type, rather than simply to verify known names. Doing this was a departure from the existing QA framework but happened to be helpful even there.
 
-The intuition for such an inclusion is clear. The symptom of pain is relevant enough to diabetes for authors to choose to include it, but diabetes is not relevant enough to pain for the inverse to occur. As a result, any list of symptoms or conditions relating to diabetes will be incomplete unless the evidence for an answer comes in large part from outside of its article.
+The intuition for such a change is clear. The symptom of pain is relevant enough to diabetes for authors to choose to include it, but diabetes is not relevant enough to pain for the inverse to occur. As a result, any list of symptoms or conditions relating to diabetes will be incomplete unless the evidence for a lexical type comes from multiple passages.
 
-The new implications of the type search has the curious effect that the text analysis pipeline operates as a tree when a detected type suggests a new candidate. We can further stimulate this effect by then running type detection on the newly generated candidate answers, making a pipeline a graph, but the results tend to be very similar.
+The implications of the type search has the curious effect that the text analysis pipeline operates as a tree when a detected type suggests a new candidate of the same lexical type. We then further stimulate this effect by then sifting for additional names of that type among the newly generated evidence cyclically, making the pipeline into a graph, but the results tend to be very similar.
 % Pull pipeline
 % Mention redirects
 % Real links rather than redirects
@@ -128,7 +128,7 @@ diabetes.'' The suggestion apparatus finds six symptoms, two of which are sympto
 
 For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
 
-The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests "blood glucose fasting test," and while the test would be recognized if used as a module in guideline extraction, the later scoring as part of question answering does not rank either suggestion very highly.
+The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests "blood glucose fasting test." As a module in the existing QA framework, the test is recognized. What remains to be seen is the extent to which the existing filtering and scoring play a role, and whether it can be separated cleanly.
 
 The current recall of the lexical type apparatus on symptoms is about 22\% for diabetes, zero for hypertension (which is fine since it does not have any to speak of), but also zero for sepsis. Sepsis has plenty of symptoms, unfortunately, they are couched in a syntax indicating that sepsis may not be the only cause.
 
