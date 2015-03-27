@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.1415926-2.6-1.40.14 (TeX Live 2014/dev) (format=pdflatex 2014.9.21)  26 MAR 2015 22:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.2.8)  27 MAR 2015 11:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **guidelines.tex
 (./guidelines.tex
 LaTeX2e <2011/06/27>
-Babel <3.9h> and hyphenation patterns for 2 languages loaded.
+Babel <3.9k> and hyphenation patterns for 3 languages loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
@@ -469,12 +469,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10> on input line 12.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 12.
-
-
-LaTeX Warning: Citation `american2013diagnosis' on page 1 undefined on input li
-ne 20.
-
-[1
+ [1
 
 {/usr/share/texlive/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Try loading font information for OMS+lmr on input line 33.
@@ -497,76 +492,58 @@ File: WikipediaA1CTable.png Graphic file (type png)
 <use WikipediaA1CTable.png>
 Package pdftex.def Info: WikipediaA1CTable.png used on input line 43.
 (pdftex.def)             Requested size: 469.75502pt x 136.4988pt.
+ [2 <./WikipediaA1CTable.png>]
 LaTeX Font Info:    Try loading font information for OT1+lmtt on input line 49.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/lm/ot1lmtt.fd
 File: ot1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [2 <./WikipediaA1CTable.png>]
-
-LaTeX Warning: Citation `wenzina2013identifying' on page 3 undefined on input l
-ine 51.
-
-[3]
-
-LaTeX Warning: Citation `doi:10.1001/jama.2013.284427' on page 4 undefined on i
-nput line 82.
-
-
-LaTeX Warning: Citation `chow2012idsa' on page 4 undefined on input line 82.
-
+) [3]
 LaTeX Font Info:    Try loading font information for OML+lmr on input line 82.
+
 (/usr/share/texlive/texmf-dist/tex/latex/lm/omllmr.fd
 File: omllmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `OML/lmr/m/n' in size <12> not available
 (Font)              Font shape `OML/lmm/m/it' tried instead on input line 82.
 
-<accuracies.png, id=21, 577.15625pt x 343.2825pt>
+<accuracies.png, id=22, 577.15625pt x 343.2825pt>
 File: accuracies.png Graphic file (type png)
  <use accuracies.png>
 Package pdftex.def Info: accuracies.png used on input line 88.
 (pdftex.def)             Requested size: 469.75502pt x 279.41394pt.
- [4 <./accuracies.png (PNG copy)>] [5]
+ [4]
+[5 <./accuracies.png (PNG copy)>]
 Overfull \hbox (12.13628pt too wide) in paragraph at lines 125--131
 [][]
  []
 
-
-LaTeX Warning: Citation `manning-EtAl:2014:P14-5' on page 6 undefined on input 
-line 147.
-
-[6]
-No file guidelines.bbl.
-[7] (./guidelines.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+[6] (./guidelines.bbl [7]) [8] (./guidelines.aux) ) 
 Here is how much of TeX's memory you used:
- 2361 strings out of 495034
- 33889 string characters out of 6181677
- 94782 words of memory out of 5000000
- 5516 multiletter control sequences out of 15000+600000
- 46740 words of font info for 42 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
- 38i,6n,23p,1306b,223s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/t
-exlive/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texlive/texmf-dist/f
-onts/enc/dvips/lm/lm-rmtt.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/lm
-/lm-mathsy.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmbx10.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/lm/lmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/lm/lmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmr12.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/lm/lmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/lm/lmtt12.pfb>
-Output written on guidelines.pdf (7 pages, 243961 bytes).
+ 2364 strings out of 494990
+ 33922 string characters out of 6180640
+ 94885 words of memory out of 5000000
+ 5523 multiletter control sequences out of 15000+600000
+ 48012 words of font info for 42 fonts, out of 8000000 for 9000
+ 34 hyphenation exceptions out of 8191
+ 38i,6n,23p,1283b,223s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-di
+st/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dv
+ips/lm/lm-rm.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/lm/lm-rmtt.enc}
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/tex
+live/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/lm/lmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/lm/lmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmmi8.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/lm/lmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/lm/lmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmri12.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
+Output written on guidelines.pdf (8 pages, 266199 bytes).
 PDF statistics:
- 74 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
+ 81 PDF objects out of 1000 (max. 8388607)
+ 57 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
