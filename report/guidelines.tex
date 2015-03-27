@@ -6,18 +6,18 @@
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
 \raggedbottom
 \author{Sean Gallagher, Hossein Hematialam, Wlodek Zadrozny}
-\title{Progress on Extraction of Medical Guidelines}
+\title{Text Mining of Medical Guidelines; Progress report for 1Q 2015}
 \begin{document}
 
 \maketitle
 \begin{abstract}
-Medical guidelines are among the denser reading materials, and contain many conditional statements and criteria which medical professionals are expected to follow as part of their work. However, considering how expansive the text is, and how dense the prose can be, it is a good target for text mining since the convergence of many such conditionals are likely to be handled more efficiently by machines than humans.
-
-Such text tends to be relatively regular, making it amenable to several approaches, including: 1) building links from analysis of constituent trees, 2) building links from regular expression matches on plain text, and 3) detecting disease-related information based on type detection. In our samples, recursive analyses of constituent parses have proven to be excessively brittle and difficult scale for many types of condition-action pairs; often nearly every sample requires another rule of analysis. A regular expression based approach has proven to be a simple, efficient solution with an average of 68.25\% precision: 62\% for Rhinosinusitis guidelines, 64\% for Hypertension guidelines, 80\% precision for Diabetes guidelines known to contain the phrase A1C, and 57\% precision for all the included Diabetes guidelines. The recall of these sets uncertain due to the large source text size. The type-directed approach is not complete enough to create condition-action pairs, but determines the lexical types of symptoms and tests with generally perfect precision for a small sample, and a recall of 22\% and 100\% respectively. Symptoms are problematic for recall in particular due to an array of type synonyms not yet accounted for, a solution to which is among our future directions.
+Medical guidelines, which medical professionals are expected to follow, contain many conditional statements and criteria.To understand the relationship between the guidelines and results of treatments on a large scale, we need to target both for text mining. In this preliminary report we describe our preliminary results.
+ 
+Medical guidelines text tends to be relatively regular, making it amenable to several approaches, including: 1) analysis of constituent trees, 2) regular expression matches on plain text, and 3) detecting disease-related information based on type detection. In our samples, recursive analyses of constituent parses have proven to be excessively brittle and difficult scale for many types of condition-action pairs; often nearly every sample requires another rule of analysis. A regular expression based approach has proven to be a simple, efficient solution with an average of 68.25\% precision: 62\% for Rhinosinusitis guidelines, 64\% for Hypertension guidelines, 80\% precision for Diabetes guidelines known to contain the phrase A1C, and 57\% precision for all the included Diabetes guidelines. The recall of these sets is uncertain due to the large source text size. The type-directed approach is not complete enough to create condition-action pairs, but determines the lexical types of symptoms and tests with generally perfect precision for a small sample, and a recall of 22\% and 100\% respectively. Symptoms are problematic for recall in particular due to an array of type synonyms not yet accounted for, a solution to which is among our future directions.
 \end{abstract}
 
 \section{Preprocessing}
-The American Diabetes Association(ADA) publishes standards of medical cares in diabetes annually in its "Diabetes Care" journal. We consider ADA's guideline\cite{american2013diagnosis} as our primary text source. It provides positive statements, tables, and figures about diabetes. We started by converting the guidelines from PDF to text format, editing sentences only to manage encoding errors, the majority of which were bullet points. Tables and some figures pose a problem, becoming unstructured text with many ambiguities. For example, Table 9 in our source text is replaced with a sentence of more than 80 words.
+The American Diabetes Association(ADA) publishes standards of medical cares in diabetes annually in its "Diabetes Care" journal. We consider ADA's guidelines \cite{american2013diagnosis} as our primary text source. It provides positive statements, tables, and figures about diabetes. We started by converting the guidelines from PDF to text format, editing sentences only to manage encoding errors, the majority of which were bullet points. Tables and some figures pose a problem, becoming unstructured text with many ambiguities. For example, Table 9 in our source text is replaced with a sentence of more than 80 words.
 
 In the next step, we tried to detect sentences of the text by LingPipe sentence detector which has reasonable accuracy and recall for our project. It detected 5,532 sentences from the text. 232 sentences contain "A1C" term which is an important factor in diagnosing diabetes.
    
@@ -31,7 +31,7 @@ Our first attempt at extracting medical conditions and symptoms from unstructure
 \item Ascend the tree, combining analyses as follows:
 \begin{itemize}
 	\item A decimal value, an operator, and a test constitute a condition.
-	\item A condition and an ailment constitute a link, which is the program output.
+	\item A condition and an ailment constitute a \emph{link}, which is the program output.
 \end{itemize}
 \end{enumerate}
 
@@ -79,7 +79,7 @@ Action: ``is the preferred initial pharmacological agent for type 2 diabetes.''
 
 Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guideline condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
 
-We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension \cite{doi:10.1001/jama.2013.284427} and Rhinosinusitis\cite{chow2012idsa} guidelines. In Rhinosinusitis guideline, we see sentences like '' If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guideline come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''
+We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension \cite{doi:10.1001/jama.2013.284427} and Rhinosinusitis\cite{chow2012idsa} guidelines. In Rhinosinusitis guideline, we see sentences like ''If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guideline come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''
 
 
 To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
@@ -151,12 +151,19 @@ The project source code was written in a mixture of Scala and Java, according to
 
 \section{Possible Next Steps}
 
-There are a number of avenues of improvement for our software. In particular, we believe we can improve the recall of the lexical type system if we use the relations in a transitive way. For example, as it now stands, finding $HbA_{1c}$ in a list of guidelines is not sufficient to suggest it as a test. It also needs outside information, possibly found in the same search. But we believe it is tractable to detect such types from across many sources in a preprocessing step. We can consider POS tags in identifying condition-action process to possibly improve precision. 
+There are a number of avenues of improvement for our software. Obviously, we can identify additional  linguistic pattern for condition-action  sentences. In particular, we can consider POS tags in identifying condition-action process to possibly improve precision.  
 
-\section{Conclusion}
+We believe we can improve the recall of the lexical type system if we use the relations in a transitive way. For example, as it now stands, finding $HbA_{1c}$ in a list of guidelines is not sufficient to suggest it as a test. It also needs outside information, possibly found in the same search. But we believe it is tractable to detect such types from across many sources in a preprocessing step. 
 
-Our project consists of several generally independent modules, and represents a foray into possibilities of text mining for this particular domain. There remains some need for a more consistent and rigorous measure of its effectiveness, in part to direct development. It could also be incorporated into a single, possibly more stable system with more readily reproducible results. Even so, it has been shown to produce precise information from plain text using only machine reading and some automated filters.
+\section{Conclusions}
+
+Our project consists of several generally independent modules, and represents a foray into possibilities of text mining for this particular domain.  The current system has been shown to produce relatively precise information from plain text using only machine reading and some automated filters. 
+
+There remains a need for a more consistent and rigorous measure of its effectiveness, in part to direct further development. In particular, concrete use cases and test cases are needed.
+
+The current set of modules could also be incorporated into a single system with more readily reproducible results, especially in the presence of test cases. 
+
 
 \bibliographystyle{plain}
-\bibliography{guidelines.bib}
+\bibliography{guidelines}
 \end{document}
