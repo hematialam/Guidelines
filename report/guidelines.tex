@@ -55,10 +55,18 @@ In order to identify condition-action sentences we used a simple pattern recogni
 	\item `When condition, action'
 	\item `Action when condition'
 \end{itemize}
-Figure 2 shows a comparison between Weniza and Kaiser's results and ours on Asthma guideline.
+We defined four regular expressions for these patterns respectively: 
+\begin{itemize}
+\item'(.*?)\textbackslash(SBAR \textbackslash(IN [Ii]f\textbackslash) (.*?) \textbackslash(, ,\textbackslash) (.*?)\textbackslash.'
+\item'(.*?)\textbackslash(SBAR \textbackslash(IN [Ii]f\textbackslash) (.*?)\textbackslash. '
+\item'(.*?)\textbackslash(SBAR \textbackslash(WHADVP \textbackslash(WRB [Ww]hen\textbackslash) (.*?) \textbackslash(, ,\textbackslash) (.*?)\textbackslash.'
+\item'(.*?)\textbackslash(SBAR \textbackslash(WHADVP \textbackslash(WRB [Ww]hen\textbackslash) (.*?)\textbackslash. '
+\end{itemize}
+
+Figure 2 shows a comparison between Weniza and Kaiser's results and ours on Asthma guidelines.
 \begin{figure}
 \includegraphics[width=\textwidth]{Comparison}
-\caption{Comparison on Asthma Guideline}
+\caption{Comparison on Asthma Guidelines}
 \end{figure}
 
 We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the diabetes guideline. You can see some result sentences below:
@@ -83,9 +91,9 @@ Condition: ``tolerated''
 Action: ``is the preferred initial pharmacological agent for type 2 diabetes.''
 \end{itemize}
 
-Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guideline condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
+Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guidelines condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
 
-We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension \cite{doi:10.1001/jama.2013.284427} and Rhinosinusitis\cite{chow2012idsa} guidelines. In Rhinosinusitis guideline, we see sentences like ''If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guideline come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''
+We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension \cite{doi:10.1001/jama.2013.284427} and Rhinosinusitis\cite{chow2012idsa} guidelines. In Rhinosinusitis guidelines, we see sentences like ''If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guidelines come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''
 
 To solve the problem of existence of "," in the condition part, we tried to analyze parsed sentence. For example, in the sentence ''They should be stopped if no improvement in steroid dose, symptoms or lung function is detected.'', if we only try to use regular expressions, we'll get ''no improvement in steroid dose'' as a condition and ''symptoms or lung function is detected. '' as an action. But when we parse the sentence, we have the whole condition under the same parenthesis:(SBAR (IN if) (S (NP (NP (NP (DT no) (NN improvement)) (PP (IN in) (NP (NN steroid) (NN dose)))) (, ,) (NP (NP (NNS symptoms)) (CC or) (NP (NN lung) (NN function)))) (VP (VBZ is) (VP (VBN detected))))).
 To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
@@ -185,7 +193,7 @@ Tables are expected to be a major bugaboo in our architecture since they have de
 \item There are two rows of column-level headers, and both are necessary to make sense of the type of the cells over which they preside.
 \item Two of the second-level headers define two types simultaneously, and imply a syntax used to delimit the values, as well as an equivalence between them. 
 \item Each value is implicitly an interval, where in all but four cases one endpoint is implied.
-\item The senses are partially reversed, and incomplete. The row-level headers are diseases, not actions, and the cell values are antecedents, also not actions. Nonetheless, since they can be used to predict diseases, which themselves can be linked with guideline actions, they cannot be discarded as needless.
+\item The senses are partially reversed, and incomplete. The row-level headers are diseases, not actions, and the cell values are antecedents, also not actions. Nonetheless, since they can be used to predict diseases, which themselves can be linked with guidelines actions, they cannot be discarded as needless.
 \end{enumerate}
 
 Even existing modules have room for improvement. The dependency graphs hold promise to be used for the same extraction as the regular expression approach, but with greater flexibility in terms of syntax. It would also have available to it many other annotations and tags that regular expressions do not. Regardless of the source of the rule, we intend to use these measures for scoring the result quality.
