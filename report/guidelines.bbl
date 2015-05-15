@@ -1,0 +1,37 @@
+\begin{thebibliography}{1}
+
+\bibitem{american2013diagnosis}
+American~Diabetes Association et~al.
+\newblock Standards of medical care in diabetes—2013.
+\newblock {\em Diabetes care}, 36(Supplement 1):S1--S110, 2013.
+
+\bibitem{chow2012idsa}
+Anthony~W Chow, Michael~S Benninger, Itzhak Brook, Jan~L Brozek, Ellie~JC
+  Goldstein, Lauri~A Hicks, George~A Pankey, Mitchel Seleznick, Gregory
+  Volturo, Ellen~R Wald, et~al.
+\newblock Idsa clinical practice guideline for acute bacterial rhinosinusitis
+  in children and adults.
+\newblock {\em Clinical Infectious Diseases}, page cir1043, 2012.
+
+\bibitem{manning-EtAl:2014:P14-5}
+Christopher~D. Manning, Mihai Surdeanu, John Bauer, Jenny Finkel, Steven~J.
+  Bethard, and David McClosky.
+\newblock The {Stanford} {CoreNLP} natural language processing toolkit.
+\newblock In {\em Proceedings of 52nd Annual Meeting of the Association for
+  Computational Linguistics: System Demonstrations}, pages 55--60, 2014.
+
+\bibitem{doi:10.1001/jama.2013.284427}
+James PA, Oparil S, Carter BL, and et~al.
+\newblock 2014 evidence-based guideline for the management of high blood
+  pressure in adults: Report from the panel members appointed to the eighth
+  joint national committee (jnc 8).
+\newblock {\em JAMA}, 311(5):507--520, 2014.
+
+\bibitem{wenzina2013identifying}
+Reinhardt Wenzina and Katharina Kaiser.
+\newblock Identifying condition-action sentences using a heuristic-based
+  information extraction method.
+\newblock In {\em Process Support and Knowledge Representation in Health Care},
+  pages 26--38. Springer, 2013.
+
+\end{thebibliography}
