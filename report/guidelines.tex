@@ -6,15 +6,18 @@
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
 \raggedbottom
 \author{Sean Gallagher, Hossein Hematialam, Wlodek Zadrozny}
-\title{Progress on Extraction of Medical Guidelines}
+\title{Text Mining of Medical Guidelines; Progress report for 1Q 2015}
 \begin{document}
+
 \maketitle
 \begin{abstract}
-Our objective in the project has thus far been to show that we can extract medical information from text, particularly medical guidelines. In doing this, we have taken three approaches, building links from analysis of constituent trees, building links from regular expression matches on plain text, and via answer type detection in an existing question answering system. So far, these approaches have shown recall on the order of 22\% and precision between 57\% and 100\%. We intend to continue following multiple strategies, and to direct further development with more specific tests and testing data.
+Medical guidelines, which medical professionals are expected to follow, contain many conditional statements and criteria.To understand the relationship between the guidelines and results of treatments on a large scale, we need to target both for text mining. In this preliminary report we describe our preliminary results.
+ 
+Medical guidelines text tends to be relatively regular, making it amenable to several approaches, including: 1) analysis of constituent trees, 2) regular expression matches on plain text, and 3) detecting disease-related information based on type detection. In our samples, recursive analyses of constituent parses have proven to be excessively brittle and difficult scale for many types of condition-action pairs; often nearly every sample requires another rule of analysis. A regular expression based approach has proven to be a simple, efficient solution with an average of 68.25\% precision: 62\% for Rhinosinusitis guidelines, 64\% for Hypertension guidelines, 80\% precision for Diabetes guidelines known to contain the phrase A1C, and 57\% precision for all the included Diabetes guidelines. The recall of these sets is uncertain due to the large source text size. The type-directed approach is not complete enough to create condition-action pairs, but determines the lexical types of symptoms and tests with generally perfect precision for a small sample, and a recall of 22\% and 100\% respectively. Symptoms are problematic for recall in particular due to an array of type synonyms not yet accounted for, a solution to which is among our future directions.
 \end{abstract}
 
 \section{Preprocessing}
-The American Diabetes Association(ADA) publishes standards of medical cares in diabetes annually in its "Diabetes Care" journal. We consider ADA's guideline as our primary text source. It provides positive statements, tables, and figures about diabetes. We started by converting the guidelines from PDF to text format, editing sentences only to manage encoding errors, the majority of which were bullet points. Tables and some figures pose a problem, becoming unstructured text with many ambiguities. For example, Table 9 in our source text is replaced with a sentence of more than 80 words.
+The American Diabetes Association(ADA) publishes standards of medical cares in diabetes annually in its "Diabetes Care" journal. We consider ADA's guidelines \cite{american2013diagnosis} as our primary text source. It provides positive statements, tables, and figures about diabetes. We started by converting the guidelines from PDF to text format, editing sentences only to manage encoding errors, the majority of which were bullet points. Tables and some figures pose a problem, becoming unstructured text with many ambiguities. For example, Table 9 in our source text is replaced with a sentence of more than 80 words.
 
 In the next step, we tried to detect sentences of the text by LingPipe sentence detector which has reasonable accuracy and recall for our project. It detected 5,532 sentences from the text. 232 sentences contain "A1C" term which is an important factor in diagnosing diabetes.
    
@@ -28,7 +31,7 @@ Our first attempt at extracting medical conditions and symptoms from unstructure
 \item Ascend the tree, combining analyses as follows:
 \begin{itemize}
 	\item A decimal value, an operator, and a test constitute a condition.
-	\item A condition and an ailment constitute a link, which is the program output.
+	\item A condition and an ailment constitute a \emph{link}, which is the program output.
 \end{itemize}
 \end{enumerate}
 
@@ -45,14 +48,20 @@ Modeling data is an essential part of information extraction from an unstructure
 
 Condition-action sentences are not always in form of ``\texttt{if} condition \texttt{then} action''. For example, in the sentence ``Conditions that affect erythrocyte turnover and hemoglobin variants must be considered, particularly when the A1C result does not correlate with the patient's clinical situation'', we have a condition-action sentence without an ``if'' term. On the other hand, conditions may refer to effects, intentions, or events rather than activities. For instance, we see an effect of a condition in ``if the A1C is 7.0\% and a repeat result is 6.8\%, the diagnosis of diabetes is confirmed.'' We see that these sentences provide valuable information for us. So, for this stage of project, we consider them as true condition-action sentences. 
 
-In order to identify condition-action sentences we used a simple pattern recognition by regular expressions. We consider four patterns for condition-sentences: 
+In order to identify condition-action sentences we used a simple pattern recognition, by inspiration of Wenzina and Kaiser's approach\cite{wenzina2013identifying},  by regular expressions. We consider four patterns for condition-sentences: 
 \begin{itemize}
 	\item `If condition, action.'
 	\item `Action if condition'
 	\item `When condition, action'
 	\item `Action when condition'
 \end{itemize}
-We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the guidelines. You can see some result sentences below:
+Figure 2 shows a comparison between Weniza and Kaiser's results and ours on Asthma guideline.
+\begin{figure}
+\includegraphics[width=\textwidth]{Comparison}
+\caption{Comparison on Asthma Guideline}
+\end{figure}
+
+We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the diabetes guideline. You can see some result sentences below:
 
 \begin{itemize}
 \item Sentence: ``If adults with diabetes choose to use alcohol, they should limit intake to a moderate amount (one drink per day or less for adult women and two drinks per  day or less for  adult men) and should take extra precautions to prevent hypoglycemia. (E)''
@@ -76,6 +85,9 @@ Action: ``is the preferred initial pharmacological agent for type 2 diabetes.''
 
 Also we found 11, 7, 2, 5 sentences with these patterns in A1C sentences. We verified these sentences and their condition and action result manually. We observed 1 error in condition determining of A1C sentences because of existence of "," in the condition part. We also observed four faults in actions. Replacing a table with a sentence and existence of "," in condition and action segments are the reason of these faults. We achieved 80\% accuracy in identifying condition-action A1C sentences. Our accuracy for the guideline condition-action sentences is around 57\%. The decreased accuracy is the result of increasing "when" sentences, sentences with 2 conditions, sentences constructed from entire tables, and increases in sentence complexity.
 
+We achieved 64\% and 62\% of precision in condition-action extraction of Hypertension \cite{doi:10.1001/jama.2013.284427} and Rhinosinusitis\cite{chow2012idsa} guidelines. In Rhinosinusitis guideline, we see sentences like ''If necessary, the entire panel will reconvene to discuss potential changes.'' which lead to decrease of precision. Most of false extracted condition-action in the hypertension guideline come from sentences those have "," in the condition part e.g. ''if pharmacologic treatment for high BP results in lower achieved SBP (eg, \textless 140 mm Hg) and treatment is well tolerated and without adverse effects on health or quality of life, treatment does not need to be adjusted.''
+
+To solve the problem of existence of "," in the condition part, we tried to analyze parsed sentence. For example, in the sentence ''They should be stopped if no improvement in steroid dose, symptoms or lung function is detected.'', if we only try to use regular expressions, we'll get ''no improvement in steroid dose'' as a condition and ''symptoms or lung function is detected. '' as an action. But when we parse the sentence, we have the whole condition under the same parenthesis:(SBAR (IN if) (S (NP (NP (NP (DT no) (NN improvement)) (PP (IN in) (NP (NN steroid) (NN dose)))) (, ,) (NP (NP (NNS symptoms)) (CC or) (NP (NN lung) (NN function)))) (VP (VBZ is) (VP (VBN detected))))).
 To achieve classification performance with regular expressions, we need to make some changes in the preprocessing stage (such as converting table sentences to a set of well structured sentences, changing passive verbs to active verbs, splitting a complex sentence to several smaller simple sentences, etc.)
 
 \begin{figure}
@@ -103,11 +115,12 @@ This is not immediately helpful because it is not yet clear that glycated hemogl
 
 % Could also build an ontology from reading
 \subsection{Link Expansion}
-When evaluating supporting passages to discover lexical types, we have found it useful to detect all possible names with the target lexical type, rather than simply to verify known names. Doing this was a departure from the existing QA framework but happened to be helpful even there.
+When evaluating supporting passages to discover lexical types, we have found it useful to open the search from purely verifying the type of a specific name to instead finding all of the names having a specific type. As a result, finding a the wrong object with the correct lexical type but in any supporting passage triggers the suggestion of new name. This approach tends to be helpful in situations where multiple names are defined at once, such as "Polyuria and polyphagia are symptoms of diabetes."
 
-The intuition for such a change is clear. The symptom of pain is relevant enough to diabetes for authors to choose to include it, but diabetes is not relevant enough to pain for the inverse to occur. As a result, any list of symptoms or conditions relating to diabetes will be incomplete unless the evidence for a lexical type comes from multiple passages.
+There is also an aspect of asymmetry in the relevance of passages. The symptom of pain is relevant enough to diabetes for authors to choose to include it, but diabetes is not relevant enough to pain for the inverse to occur. Thus, you will not find evidence linking the two in a document describing pain, so the title will generally be inaccurate for a search of symptoms, and the effect of the suggestion apparatus will be exaggerated.
 
-The implications of the type search has the curious effect that the text analysis pipeline operates as a tree when a detected type suggests a new candidate of the same lexical type. We then further stimulate this effect by then sifting for additional names of that type among the newly generated evidence cyclically, making the pipeline into a graph, but the results tend to be very similar.
+The new implications of the type search has the curious effect that the text analysis pipeline operates as a tree when a detected type suggests a new name. We further stimulate this effect by then searching for type definitions among the evidence collected for the new suggested names. This adds a cycle and makes the pipeline a graph. We added a simple condition ending the cycle at three loops but typically this is not triggered, as it rather quickly finds all of the available definitions related to the original topic.
+
 % Pull pipeline
 % Mention redirects
 % Real links rather than redirects
@@ -128,7 +141,7 @@ diabetes.'' The suggestion apparatus finds six symptoms, two of which are sympto
 
 For the closely related query ``This sign indicates diabetes,'' ``Proteinuria'' is the top result, although in this case it is read from the wiki page on the symptom rather than the disease.
 
-The query "This test indicates diabetes" discovers the type of the A1C test, and also suggests "blood glucose fasting test." As a module in the existing QA framework, the test is recognized. What remains to be seen is the extent to which the existing filtering and scoring play a role, and whether it can be separated cleanly.
+The query "This test indicates diabetes" discovers A1C is a test, and also suggests "blood glucose fasting test," both of which are correct.
 
 The current recall of the lexical type apparatus on symptoms is about 22\% for diabetes, zero for hypertension (which is fine since it does not have any to speak of), but also zero for sepsis. Sepsis has plenty of symptoms, unfortunately, they are couched in a syntax indicating that sepsis may not be the only cause.
 
@@ -138,17 +151,48 @@ The situation with medical tests tend to be much clearer. The $HbA_{1c}$, as wel
 
 \section{Software}
 
-We used a number of software packages to develop the existing software. In particular, we used CoreNLP for constructing constituent and dependency parses, and LingPipe for additional constituent parses, which was the initial stage of our development.
+We used a number of software packages to develop the existing software. In particular, we used CoreNLP \cite{manning-EtAl:2014:P14-5} for constructing constituent and dependency parses, and LingPipe for additional constituent parses, which was the initial stage of our development.
 We used Apache Jena and Fuzeki with TDB for interfacing with the DBPedia RDF database as part of the lexical types setup, but DBPedia ontologies provided few sufficiently specific types. We later used logic-programming style rules supported by Jena's Reasoner interface to detect types in passages, but after some limitations made processing prohibitively slow, we rewrote our lexical recognition rules for TuProlog. 
 
 The project source code was written in a mixture of Scala and Java, according to what was more appropriate at the time. Since several of our components run independently, the language difference rarely played a role in development.
 
 \section{Possible Next Steps}
+\subsection*{Scope}
 
-There are a number of avenues of improvement for our software. In particular, we believe we can improve the recall of the lexical type system if we use the relations in a transitive way. For example, as it now stands, finding $HbA_{1c}$ in a list of guidelines is not sufficient to suggest it as a test. It also needs outside information, possibly found in the same search. But we believe it is tractable to detect such types from across many sources in a preprocessing step.
+The modules described in this paper are part of a larger scope. Our concept is to write and use several modules taking multiple approaches of information analysis of unstructured text, in order  to generate a more comprehensive and more easily searched representation of medical guidelines. When we can generate a sufficient repository of these guidelines, we have in mind to:
 
-\section{Conclusion}
+\begin{enumerate}
+\item Make the indexed guidelines available in a way that one can determine possible remedial actions given a set of diagnostic conditions,
+\item Suggest additional diagnostic criteria needed to determine a remedial action,
+\item Assess the consistency of multiple guidelines and multiple sources of guidelines, with a focus on the percentage consensus for a range of possibly non-numeric values, including visualization if necessary,
+\item Given the necessary level of cooperation from neighboring institutions, evaluate how existing records conform to the mined guidelines.
+\end{enumerate}
 
-Our project consists of several generally independent modules, and represents a foray into possibilities of text mining for this particular domain. There remains some need for a more consistent and rigorous measure of its effectiveness, in part to direct development. It could also be incorporated into a single, possibly more stable system with more readily reproducible results. Even so, it has been shown to produce precise information from plain text using only machine reading and some automated filters.
+\subsection*{Architecture}
+Like many text analytics applications, we intend to operate using a pipeline. We have discovered the need for the following operations, which we have thus far been only partially automated:
 
+\begin{enumerate}
+\item Write a general method of reformatting incoming documents into plain text, paying special attention to tables and lists, since these contain the majority of the rules and can be otherwise very difficult to parse. Judging from the time spent on this activity in the previous months, we expect this to be the most important and difficult step.
+\item Parse the resulting text, using all three of the methods mentioned above. We intend to label table cells with their column and row headers, with the understanding that these contribute usually to either the antecedents of the rules, or to the lexical type of the consequent remedies. 
+\item Inject related information from existing knowledge bases where necessary in order to fill in gaps or missing context from the text. This now consists of verifying lexical types, but we target medical ontologies and thesauri in particular.
+\item Filter and score condition-action rules in order to maximize precision of the results.
+\end{enumerate}
+
+\subsection*{Details}
+Tables are expected to be a major bugaboo in our architecture since they have dense, semi-structured data that does not conform very well to either paradigm of analysis. We believe we can improve the quality of analysis by taking into account the row and column context. The headers may contain conditions and lexical types, but supposing these are missing or ambiguous, it may also be possible to arrive at a conclusion using the neighbors as examples.
+
+Even existing modules have room for improvement. The dependency graphs hold promise to be used for the same extraction as the regular expression approach, but with greater flexibility in terms of syntax. It would also have available to it many other annotations and tags that regular expressions do not. Regardless of the source of the rule, we intend to use these measures for scoring the result quality.
+
+We believe we can improve the recall of the lexical type system if we use the relations in a transitive way. For example, as it now stands, finding $HbA_{1c}$ in a list of guidelines is not sufficient to suggest it as a test. It also needs outside information, possibly found in the same search. But we believe it is tractable to detect such types from across many sources in a preprocessing step. 
+
+\section{Conclusions}
+
+Our project consists of several generally independent modules, and represents a foray into the possibilities of text mining for this particular domain. The current system has been shown to produce relatively precise information from plain text using only machine reading and some automated filters.
+
+There remains a need for a more consistent and rigorous measure of its effectiveness, in part to direct further development. In particular, concrete use cases and test cases are needed.
+
+The current set of modules could also be incorporated into a single system with more readily reproducible results, especially in the presence of test cases. 
+
+\bibliographystyle{plain}
+\bibliography{guidelines}
 \end{document}
