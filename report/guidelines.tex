@@ -156,7 +156,7 @@ We used Apache Jena and Fuzeki with TDB for interfacing with the DBPedia RDF dat
 
 The project source code was written in a mixture of Scala and Java, according to what was more appropriate at the time. Since several of our components run independently, the language difference rarely played a role in development.
 
-\section{Possible Next Steps}
+\section{Next Steps}
 \subsection*{Scope}
 
 The modules described in this paper are part of a larger scope. Our concept is to write and use several modules taking multiple approaches of information analysis of unstructured text, in order  to generate a more comprehensive and more easily searched representation of medical guidelines. When we can generate a sufficient repository of these guidelines, we have in mind to:
@@ -179,7 +179,14 @@ Like many text analytics applications, we intend to operate using a pipeline. We
 \end{enumerate}
 
 \subsection*{Details}
-Tables are expected to be a major bugaboo in our architecture since they have dense, semi-structured data that does not conform very well to either paradigm of analysis. We believe we can improve the quality of analysis by taking into account the row and column context. The headers may contain conditions and lexical types, but supposing these are missing or ambiguous, it may also be possible to arrive at a conclusion using the neighbors as examples.
+Tables are expected to be a major bugaboo in our architecture since they have dense, semi-structured data that does not conform very well to either paradigm of analysis. We believe we can improve the quality of analysis by taking into account the row and column context. The headers may contain conditions and lexical types, but supposing these are missing or ambiguous, it may also be possible to arrive at a conclusion using the neighbors as examples. However, any ambiguity in the headers will likely be greatly magnified in the cells. Referring back to Figure 1, notice the wide array of problems such analysis faces.
+\begin{enumerate}
+\item 21 cells have no English text.
+\item There are two rows of column-level headers, and both are necessary to make sense of the type of the cells over which they preside.
+\item Two of the second-level headers define two types simultaneously, and imply a syntax used to delimit the values, as well as an equivalence between them. 
+\item Each value is implicitly an interval, where in all but four cases one endpoint is implied.
+\item The senses are partially reversed, and incomplete. The row-level headers are diseases, not actions, and the cell values are antecedents, also not actions. Nonetheless, since they can be used to predict diseases, which themselves can be linked with guideline actions, they cannot be discarded as needless.
+\end{enumerate}
 
 Even existing modules have room for improvement. The dependency graphs hold promise to be used for the same extraction as the regular expression approach, but with greater flexibility in terms of syntax. It would also have available to it many other annotations and tags that regular expressions do not. Regardless of the source of the rule, we intend to use these measures for scoring the result quality.
 
@@ -187,11 +194,7 @@ We believe we can improve the recall of the lexical type system if we use the re
 
 \section{Conclusions}
 
-Our project consists of several generally independent modules, and represents a foray into the possibilities of text mining for this particular domain. The current system has been shown to produce relatively precise information from plain text using only machine reading and some automated filters.
-
-There remains a need for a more consistent and rigorous measure of its effectiveness, in part to direct further development. In particular, concrete use cases and test cases are needed.
-
-The current set of modules could also be incorporated into a single system with more readily reproducible results, especially in the presence of test cases. 
+Our project consists of several generally independent modules, and represents a foray into the possibilities of text mining for this particular domain. The current system has been shown to produce relatively precise information from plain text using only machine reading and some automated filters. As expected, recall is much more difficult to ascertain and will in any case require larger sample sizes as well as a degree of expert review. Nonetheless, we have given a simple proof-of-concept for a number of the techniques required to assemble an architecture to digest and index medical guidelines.
 
 \bibliographystyle{plain}
 \bibliography{guidelines}
