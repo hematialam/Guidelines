@@ -66,7 +66,7 @@ We defined four regular expressions for these patterns respectively:
 Figure 2 shows a comparison between Weniza and Kaiser's results and ours on Asthma guidelines.
 \begin{figure}
 \includegraphics[width=\textwidth]{Comparison}
-\caption{Comparison on Asthma Guidelines}
+\caption{Comparison on Asthma Guidelines(When we used parse trees, precision increased by 2\%)}
 \end{figure}
 
 We detected 81, 61, 62, and 60 sentences respectively, matching these patterns against the diabetes guideline. You can see some result sentences below:
@@ -171,6 +171,7 @@ The project source code was written in a mixture of Scala and Java, according to
 The modules described in this paper are part of a larger scope. Our concept is to write and use several modules taking multiple approaches of information analysis of unstructured text, in order  to generate a more comprehensive and more easily searched representation of medical guidelines. When we can generate a sufficient repository of these guidelines, we have in mind to:
 
 \begin{enumerate}
+\item Create "golden standard" of conditions and actions from Rhinosinusitis guidelines, Hypertension guidelines, Diabetes guidelines, and Asthma guidelines.
 \item Make the indexed guidelines available in a way that one can determine possible remedial actions given a set of diagnostic conditions,
 \item Suggest additional diagnostic criteria needed to determine a remedial action,
 \item Assess the consistency of multiple guidelines and multiple sources of guidelines, with a focus on the percentage consensus for a range of possibly non-numeric values, including visualization if necessary,
